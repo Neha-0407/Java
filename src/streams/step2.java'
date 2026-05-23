@@ -1,0 +1,91 @@
+List<String> words = Arrays.asList(
+    "apple", "banana", "avocado", "blueberry", "apricot", "cherry"
+);
+
+
+["apricot", "avocado", "apple"]
+
+List<String> ans =  words.stream().filter(s->s.startsWith("a")).sorted((a,b)->{
+                                            if(a.length()==b.length())
+                                                return a.compareTo(b);
+                                            return b.length()-a.length();})
+                                            .collect(Collectors.toList());
+//Better Version
+
+List<String> ans = words.stream()
+    .filter(s -> s.startsWith("a"))
+    .sorted(
+        Comparator.comparingInt(String::length)
+                  .reversed()
+                  .thenComparing(String::compareTo)
+    )
+    .limit(3)
+    .collect(Collectors.toList());
+
+//
+Find maximum square of odd numbers
+
+Optional<Integer> max = nums.stream()
+    .filter(n -> n % 2 != 0)   // odd numbers
+    .map(n -> n * n)           // square
+    .reduce((a, b) -> Math.max(a, b)); // max
+
+int sum = nums.stream()
+            .filter(n->n%2!=0)
+            .map(n->n*n)
+            .reduce((a,b)->Math.max(a,b))
+            .orElse(0); // fallback
+
+class Employee {
+    String name;
+    String department;
+    int salary;
+}
+
+Map<String, List<Employee>>
+
+Group By Department and return employee
+
+Map<String,List<Employee>> = employee.stream().collect(Collectors.groupingBy(Employee::getDepartment));
+
+Group By Department and return name
+
+Map<String,List<Employee>> = employee.stream().collect(Collectors.groupingBy(Employee::getDepartment,
+                             Collectors.mapping(Employee::getName,Collectors.toList())
+                             ));
+//Group By department and then club filter employess that earn greater than 5000
+
+Map<String, Long> result = employees.stream()
+    .filter(e -> e.getSalary() > 5000)
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.counting()
+    ));
+// department → employee with highest salary
+
+//maxBy - takes Comparator
+//minBy
+Map<String, Optional<Employee>> result = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.maxBy(
+            Comparator.comparingInt(Employee::getSalary)
+        )
+    ));
+
+
+Group by department
+Take top 3 highest salaries per department
+Return average of those 3
+
+Map<String, Double> result = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.collectingAndThen(
+            Collectors.toList(),
+            list -> list.stream()
+                .sorted(Comparator.comparingInt(Employee::getSalary).reversed())
+                .limit(3)
+                .collect(Collectors.averagingInt(Employee::getSalary))
+        )
+    ));

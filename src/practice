@@ -1,0 +1,58 @@
+Q1.
+
+HashMap Logic Test: Given a Person class (fields: id, name, salary).
+If you create three objects: p1(1, "A", 30), p2(2, "B", 60), and p3(1, "A", 30).
+If you put all three into a HashMap<Person, Integer>, what will map.size() and map.get() return for each?
+Follow-up: Explain the behavior if hashCode() and equals() are overridden vs. if they are not.
+
+Ans:
+
+if you do not override HashMap and equals, so comparison will happen based on memory address
+size will be 3 - every object will be unique
+
+if you override, the id,name and salary the O/p will be 2
+
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Person)) return false;
+    Person p = (Person) o;
+    return id == p.id && name.equals(p.name) && salary == p.salary;
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(id, name, salary);
+}
+
+--------------------------------------------------------------
+Q2. 
+
+Person p1 = new Person(1, "A", 30);
+Map<Person, Integer> map = new HashMap<>();
+
+map.put(p1, 10);
+
+// mutation
+p1.setSalary(50);
+
+map.get(p1);
+
+What happens when we mutate the key?
+HashMap may fail to retrieve the key because the hashCode changes, causing it to look in the wrong bucket.
+Mutating a key can lead to duplicate entries and memory leaks because the same object may exist in multiple buckets.
+
+If equals() returns true but hashCode() differs, HashMap may store duplicate keys in different buckets, breaking correctness.
+
+Custom Sorting: How do you sort a list of Person objects in descending order by name, and if names are equal, in ascending order by salary? Discuss the choice between Comparable and Comparator.
+//Comparable defines natural ordering inside the class, while Comparator provides external, flexible sorting logic and allows multiple sorting strategies.
+List<Person> person = persons.stream()
+                        .sorted(Comparator.comparing(Person::getName,Comparator.reverseOrder()))
+                        .thenComparing(Person::getSalary)
+                        .collect(Collectors.toList())
+
+// Name → ascending
+// Null names → should come last
+// Salary → descending (if names equal)            
+
+List<Person> persons = person.stream().sorted(Comparator.comparing(Person::getName).thenComparing(Person::getSalary)).collect(Collectors.toList());

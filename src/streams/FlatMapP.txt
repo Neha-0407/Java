@@ -1,0 +1,51 @@
+//Map transforms each element into another element[1->1]
+
+//map takes Function functional interface as input
+
+class FlatMapP{
+    public static void Main(String[] args){
+        List<List<Integer>> nums = Arrays.asList(
+            Arrays.asList(1,2),
+            Arrays.asList(3,4)
+        );
+
+        List<Employee> employees = Arrays.asList(
+            new Employee("Neha", "IT"),
+            new Employee("Raj", "HR"),
+            new Employee("Aman", "IT")
+        );
+
+        //groupingBy -> count employees in dept
+        Map<String,List<Employee>> grp = employees.stream().collect(Collectors.groupingBy(Employee::getDept));
+        
+        //counting -> grp by lenegth
+        Map<Integer,Long> result = employees.stream().collect(Collectors.groupingBy(String::length,Collectors.counting()));
+        
+        //mapping -> grp by Length but name in uppercase
+        Map<Integer,List<String>> ans = employees.stream().collect(Collectors.groupingBy(String::length,Collectors.mapping(String::toUpperCase,
+                                        Collectors.toList())));
+
+        //partitioningBy -> only 2 grps possible yes or no
+
+        Map<Boolean,List<String>> = arr.stream().collect(Collectors.partitioningBy(x->x%2==0));
+
+        // summarizingInt() 
+        IntSummaryStatistics stats = nums.stream().collect(Collectors.summarizingInt(x->x));
+        give statistcs - getSum(),getAverage(),getMax(), getMin(),getCount()      
+        List<Integer> ans = nums.stream().flatMap(list->list.stream()).toList();
+
+        //toMap
+
+        Map<String,Integer> ans  = arr.stream().collect(Collectors.toMap(
+                                                    name->name,
+                                                    name->name.length()          
+                                                ));
+
+        List<Integer> a = Arrays.asList(1,2,3,4);
+        
+        a.stream().
+        peek(x->System.out.println("Before :"+x)).map(x->x*2).forEach(System.out::println)
+
+        System.out.println(ans);
+    }
+}
