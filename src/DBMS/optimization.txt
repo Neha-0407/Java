@@ -1,0 +1,81 @@
+Most relational db use B-Tree indexes by default because they support equlaity lookup,range queries, sorting , order traversal
+
+High cardinality means how unique values are higher the cardinality better the index search will work
+
+Low Selectivity Index/ Low Cardinality Column ->
+-----------------------
+SELECT *  FROM transactions
+WHERE user_id = 101;
+
+CREATE INDEX idx_user_id
+ON transactions(user_id);
+
+Without Index = O(N)
+with Index = O(logN) -> B Tree Lookup
+
+-----------------------------------
+
+COMPOSITE INDEX SCENARIO
+
+SELECT * FROM orders
+WHERE customer_id = 10 AND status = 'DELIVERED';
+
+CREATE INDEX idx_customer_status
+ON orders(customer_id,status);
+
+COMPOSITE index it follows Leftmost Prefix Rule
+The index supports customer_id, customer_id and status but not status alone
+
+try to put higher cardinality column first
+
+-------------------------------------------
+
+Too many indexes on write heavy table, every insert/update/delete must update all the indexes
+
+-----------------------------------
+
+COVERING INDEX SCENARIO
+
+SELECT name,salary FROM employees
+WHERE department = 'ENG';
+
+CREATE INDEX idx_cover ON employees(name,salary,department);
+
+DB can query directly from index, Without touching table rows called covering index/Index only scan.
+
+-------------------------------------------------------
+HOT PARTITION/SHARDING
+
+suppose DB is sharded by country, and all the traffic comes to specific country
+Hash based Sharding 
+hash(user_id) -> user_id%4 then users distribute evenly
+--------------------------------------------------
+
+INDEX NOT BEING USED
+
+SELECT * from USERS WHERE LOWER(name) = 'neha';
+
+index is on name, so index will not work.Function on indexed column prevents index usage.
+
+solution
+
+CREATE INDEX idx_lower_name ON users(LOWER(name));
+
+---------------------------------------------------
+
+RANGE QUERY OPTIMIZATIION
+
+SELECT * FROM transactions WHERE created_at BETWEEN ? AND ?;
+
+INDEX(created_at) -  B Trees work excellen for ranges
+
+----------------------------------------------------------
+
+OFFSET - used for pagination
+skip a specific number of rows before returning the result set
+
+SELECT * FROM transactions LIMIT 10 OFFSET 20;
+skip first 20 rows then return next 10 rows
+
+LIMIT 10 OFFSET 1000000
+DB still processes first 10 lakh rows before returning 10 rows.
