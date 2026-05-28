@@ -1,0 +1,75 @@
+The system should support:
+
+multiple floors
+different vehicle types
+parking spot allocation
+ticket generation
+vehicle exit
+fee calculation
+
+I have a few clarification questions before I start designing:
+    1. What vehicle types should we support? (Car, bike, truck, etc.)
+    2. Does each parking spot support specific vehicle types?
+    3. Should parking allocation happen automatically or manually?
+    4. Do we need pricing and fee calculation?
+    5. Should we support multiple parking floors?
+    6. Do we need reservation support?
+    7. Is persistence required, or can we keep this in-memory for now?
+    8. Should we consider concurrent access by multiple users?
+
+Since multiple users may try to park or exit vehicles simultaneously, we should think about concurrency and thread safety.
+
+For this implementation, I’ll keep persistence in-memory unless we want to extend the discussion to databases later.
+
+From a consistency standpoint, we should ensure that a parking spot cannot be assigned to multiple vehicles concurrently, so atomic operations around allocation/deallocation are important.
+
+Latency requirements are not extremely strict here, but correctness and consistency of spot allocation are critical.
+
+
+Entites and classes
+
+
+model/
+    Vehicle
+    Ticket
+    ParkingSpot
+    ParkingFloor
+    Payment
+
+enum/
+    ParkingSpotStatus
+    TicketStatus
+    PaymentStatus
+    VehicleType
+
+service/
+    TicketService
+        -generateTicket()
+    PaymentService
+        -makePayment()
+    ParkingService
+        -parkVehicle()
+        -unParkVehicle()
+    ParkingSpotAllocationService
+        -findAvailableSpot()
+
+strategy/
+    PaymentStrategy
+    SpotAllocationStrategy
+
+repository/
+    ParkingSpotRepository
+
+exception/
+    ParkingFullException
+    InvalidTicketException
+ParkingService - should orchestrate the flow
+
+parkVehicle()
+    -findAvailableSpot
+    -allocateSpot
+    -generateTicket
+    -markOccupied
+
+----------------------
+
