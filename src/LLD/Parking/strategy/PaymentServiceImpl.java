@@ -1,9 +1,7 @@
-package LLD.Parking.services;
+package LLD.Parking.strategy;
 
 import LLD.Parking.enums.PaymentStatus;
 import LLD.Parking.model.Ticket;
-import LLD.Parking.strategy.PaymentService;
-import LLD.Parking.strategy.PaymentStrategy;
 
 public class PaymentServiceImpl implements PaymentService {
 

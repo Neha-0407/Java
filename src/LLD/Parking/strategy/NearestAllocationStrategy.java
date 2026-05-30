@@ -17,13 +17,10 @@ public class NearestAllocationStrategy implements ParkingSpotAllocationStrategy 
 
     @Override
     public ParkingSpot allocateParkingSpot(Vehicle vehicle) {
-       List<ParkingSpot> parkingSpots = parkingRepository.getSpotsByVehicleType(vehicle.getVehicleType());
-       for(ParkingSpot spot : parkingSpots){
-            if(spot.getParkingSpotStatus() == ParkingSpotStatus.VACANT){
-                spot.setCurrentVehicle(vehicle);
-                spot.setParkingSpotStatus(ParkingSpotStatus.OCCUPIED);
-                return spot;
-            }
+        ParkingSpot spot = parkingRepository.getSpotsByVehicleType(vehicle.getVehicleType()).poll();
+                            
+        if(spot != null && spot.tryAndAssignLock(vehicle)){
+            return spot;
         }
         throw new RuntimeException("No parking spot available for vehicle type: " + vehicle.getVehicleType());
     }

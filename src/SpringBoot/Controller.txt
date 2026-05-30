@@ -1,0 +1,10 @@
+@RestController
+@RequestMapping("/users")
+class UserController{
+    @GetMapping("/{id}")
+    public String getUser(@PathVariable int id){
+        if(id==0)
+            throw new RuntimeException("User not found");
+        return "User found";
+    }
+}

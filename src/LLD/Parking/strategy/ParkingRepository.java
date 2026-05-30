@@ -4,21 +4,23 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import LLD.Parking.enums.VehicleType;
 import LLD.Parking.model.ParkingSpot;
 
-class ParkingRepository {
-private final Map<VehicleType,List<ParkingSpot>> parkingSpotbyVehicle;
+public class ParkingRepository {
+private final Map<VehicleType,ConcurrentLinkedQueue<ParkingSpot>> parkingSpotbyVehicle;
 
     ParkingRepository(){
         this.parkingSpotbyVehicle = new HashMap<>();
     }
 
     public void addParkingSpot(VehicleType type,ParkingSpot spot){
-        parkingSpotbyVehicle.computeIfAbsent(type,k->new ArrayList<>()).add(spot);
+        parkingSpotbyVehicle.computeIfAbsent(type,k->new ConcurrentLinkedQueue<>()).add(spot);
     }
 
-    public List<ParkingSpot> getSpotsByVehicleType(VehicleType type){
-        return parkingSpotbyVehicle.getOrDefault(type,Collections.emptyList());
+    public ConcurrentLinkedQueue<ParkingSpot> getSpotsByVehicleType(VehicleType type){
+        return parkingSpotbyVehicle.getOrDefault(type,new ConcurrentLinkedQueue<>());
     }
 }

@@ -1,0 +1,47 @@
+@SpringBootApplication is equivalent to @Configuration, @EnableAutoConfiguration, and @ComponentScan 
+
+1. IOC - Inversion of Control
+class PaymentService {
+
+    public void pay() {
+
+        System.out.println(
+                "Payment done"
+        );
+    }
+}
+
+class OrderService {
+
+    private PaymentService paymentService;
+
+    public OrderService() {
+
+        paymentService =
+                new PaymentService();
+    }
+
+    public void placeOrder() {
+
+        paymentService.pay();
+
+        System.out.println(
+                "Order placed"
+        );
+    }
+}
+
+OrderService depends on PaymentService
+
+
+with Spring we will use the @Service annotation over OrderService and PaymentService
+Spring creates: PaymentService object and OrderService object inside container
+Object creation, dependency wiring and lifecycle is all managed by spring.
+
+Spring Container
+    ↓ creates
+PaymentService
+
+Spring Container
+    ↓ injects
+OrderService

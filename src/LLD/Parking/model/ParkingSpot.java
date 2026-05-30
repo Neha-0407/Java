@@ -1,27 +1,51 @@
 package LLD.Parking.model;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import LLD.Parking.enums.ParkingSpotStatus;
 import LLD.Parking.enums.ParkingSpotType;
 
 public class ParkingSpot {
-    String spotId;
-    ParkingSpotType parkingSpotType;
-    ParkingSpotStatus parkingSpotStatus;
-    Vehicle currentVehicle;
-    double hourlyRate;
+    private final String spotId;
+    private ParkingSpotType parkingSpotType;
+    private ParkingSpotStatus parkingSpotStatus;
+    private Vehicle currentVehicle;
+    private double hourlyRate;
+    private final ReentrantLock lock;
 
     ParkingSpot(String spotId, ParkingSpotType parkingSpotType, double hourlyRate){
         this.spotId = spotId;
         this.parkingSpotType = parkingSpotType;
         this.hourlyRate = hourlyRate;
         this.parkingSpotStatus = ParkingSpotStatus.VACANT;
+        this.lock = new ReentrantLock();
+    }
+
+    public boolean tryAndAssignLock(Vehicle vehicle){
+        lock.lock();
+        try{
+            if(this.parkingSpotStatus == ParkingSpotStatus.OCCUPIED)
+                return false;   
+            this.parkingSpotStatus = ParkingSpotStatus.OCCUPIED;
+            this.currentVehicle = vehicle; // This will be set by the allocation strategy after acquiring the lock
+        }finally{
+            lock.unlock();
+        }
+        return true;
+    }
+    public void releaseLock(){
+        lock.lock();
+        try{
+            this.parkingSpotStatus = ParkingSpotStatus.VACANT;
+            this.currentVehicle = null; 
+        }finally{
+            lock.unlock();
+        }
     }
     public String getSpotId() {
         return spotId;
     }
-    public void setSpotId(String spotId) {
-        this.spotId = spotId;
-    }
+
     public ParkingSpotType getParkingSpotType() {
         return parkingSpotType;
     }

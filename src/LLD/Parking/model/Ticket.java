@@ -10,7 +10,7 @@ public class Ticket {
     long entryTime;
     long exitTime;
     TicketStatus ticketStatus;
-    
+
     public String getTicketId() {
         return ticketId;
     }
@@ -46,6 +46,10 @@ public class Ticket {
     }
     public void setTicketStatus(TicketStatus ticketStatus) {
         this.ticketStatus = ticketStatus;
+    }
+    public void closeTicket(){
+        this.exitTime = System.currentTimeMillis();
+        this.ticketStatus = TicketStatus.CLOSED;
     }
 
     

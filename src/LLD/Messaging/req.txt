@@ -1,0 +1,99 @@
+The system should support:
+
+one-to-one messaging,
+group conversations,
+sending messages,
+viewing conversation history,
+unread message count,
+notifications.
+
+For a messaging system, low latency and availability are important.
+However, we should still maintain reasonable consistency guarantees for message ordering and delivery within a 
+conversation.
+
+For this implementation, I’ll keep persistence in-memory unless we later want to discuss distributed storage or 
+database integration.
+
+Enums
+
+MessageStatus
+NotificationStaus
+ConversationStatus
+
+
+model
+
+Message
+User
+Notifications
+Conversation
+
+repository
+
+ConversationRepository
+MessageRepository
+UserRepository
+NotificationRepository
+userToMessage - Map<Conversation,List<Message>>
+userToConversation - Map<Conversation,List<User>>
+
+service
+
+MessageService
+    -Message sendMessage(UserTo, ConversationType)
+    -getConversationMessages
+    -markAsread()
+
+ConversationService
+    -void updateConversation(conversationId,Message)
+    -List<Message> seeConversationHistory(converstationId)
+    //unreadMessage Map<String, Integer>
+
+NotificationService
+    -Notification sendNotification(userTo)
+
+Orchestarator 
+MessagingService
+    -sendMessage
+    -sendNotification
+    -updateConversationHistory
+
+Message persistence and conversation updates should happen synchronously to maintain consistency.
+However, notification dispatching is a good candidate for asynchronous processing using queues or event-driven architecture to reduce latency and improve scalability.
+
+All these messages will be part of Converstaion
+
+//How are you going to maintain ordereing
+
+simple timestamps will not be enough, bcs multiple messages may arrive at the same timestamps
+
+1. so, ever converation maintains a sequenceNumber
+increment must be atomic
+
+2. lock per Conversation
+
+when u send the message
+lock(Conversation)
+append the message 
+increment the count
+
+3. For scalable system
+
+Kafka  - Message for same conversation goes to same partition
+RabbitMQ
+Event Queues
+
+4. Single Writer Principle
+
+Only ONE thread/service writes to a conversation stream.
+Guarantees ordering naturally.
+
+Used in:
+event sourcing,
+distributed logs.
+
+Since notification delivery mechanisms can vary independently, I’m abstracting them behind a common interface so new channels can be added without modifying orchestration logic.
+
+
+
+
