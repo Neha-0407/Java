@@ -1,0 +1,19 @@
+Design a in memory SQL like databases
+
+You should be able to store rows
+Column could be of int, string or boolean datatype
+We should be able to set a primary key or set of primary keys
+Create index on the primary key
+Should not break on concurrent operations
+Should be able to create tables, rows and columns
+You can find more details about this quesiton on other interview experience on leetcode
+
+Expected features: Create/Drop Database, Create/Drop Table, Insert/Update/Delete Row, Create Index, Transactions, and Concurrency.
+
+
+
+Design a Search Engine kind of System
+
+Should be able to add and remove documents (consider Strings)
+Should be able to efficiently return list of all documents containing all words in the Search Query
+Documents should be searchable via tags (Was mentioned as : Create efficient dataset for storing documents)

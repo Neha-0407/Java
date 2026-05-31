@@ -14,7 +14,7 @@ import java.util.Map;
 
 //if we use a singly linked list, we would have to traverse the entire list to find the node to remove, 
 // which would result in O(n) time complexity for eviction. With a doubly linked list, we can directly access 
-// the node to remove and update the pointers in O(1) time using prev and next pointers, making the eviction process efficient.
+// the node to remove and update the pointers in O(1) time using prev and next pointers , making the eviction process efficient.
 class Node{
     int key;
     int value;
